@@ -1,19 +1,27 @@
+import { act } from "react-dom/test-utils";
 import cartActionTypes from "./cart.actions.types";
+import { addToCart } from "./cart.utils";
 
 const INITIAL_STATE = {
-    hidden: false
-}
+  hidden: false,
+  cartItems: [],
+};
 
 const cartReducer = (state = INITIAL_STATE, action) => {
-    switch (action.type) {
-        case cartActionTypes.TOGGLE_DROPDOWN:
-            return {
-                ...state,
-                hidden: !state.hidden
-            }
-        default:
-            return state;
-    }
-} 
+  switch (action.type) {
+    case cartActionTypes.TOGGLE_DROPDOWN:
+      return {
+        ...state,
+        hidden: !state.hidden,
+      };
+    case cartActionTypes.ADD_ITEM:
+      return {
+        ...state,
+        cartItems: addToCart(state.cartItems, action.payload),
+      };
+    default:
+      return state;
+  }
+};
 
 export default cartReducer;
