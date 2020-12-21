@@ -8,6 +8,7 @@ import Header from "./components/header/header.compnent";
 import HomePage from "./pages/homePage/homePage.component";
 import ShopPage from "./pages/shopPage/shopPage.component";
 import AuthPage from "./pages/authPage/authPage.component";
+import CheckoutPage from "./pages/checkoutPage/checkoutPage.component";
 import { auth, createUserDocument } from "./firebase/firebase.utils";
 import { setCurrentUser } from "./redux/user/user.actions";
 import { selectCurrentUser } from "./redux/user/user.selector";
@@ -53,6 +54,9 @@ class App extends React.Component {
               this.props.currentUser ? <Redirect to="/" /> : <AuthPage />
             }
           />
+           <Route path="/checkout">
+            <CheckoutPage />
+          </Route>
         </Switch>
       </div>
     );

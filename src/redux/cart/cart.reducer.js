@@ -1,6 +1,5 @@
-import { act } from "react-dom/test-utils";
 import cartActionTypes from "./cart.actions.types";
-import { addToCart } from "./cart.utils";
+import { addToCart, removeFromCart } from "./cart.utils";
 
 const INITIAL_STATE = {
   hidden: false,
@@ -18,6 +17,16 @@ const cartReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         cartItems: addToCart(state.cartItems, action.payload),
+      };
+    case cartActionTypes.REMOVE_ITEM:
+      return {
+        ...state,
+        cartItems: removeFromCart(state.cartItems, action.payload),
+      };
+    case cartActionTypes.CLEAR_CART_ITEM:
+      return {
+        ...state,
+        cartItems: state.cartItems.filter(item => item.id !== action.payload)
       };
     default:
       return state;
