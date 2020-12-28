@@ -1,13 +1,14 @@
-import React from "react";
-import { connect } from "react-redux";
-import { createStructuredSelector } from "reselect";
-import CheckoutItem from "../../components/checkout-item/checkout-item.component";
+import React from 'react';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import CheckoutItem from '../../components/checkout-item/checkout-item.component';
+import StripeButton from '../../components/stripe-button/stripe-button.component';
 import {
   selectCartItems,
   selectCartTotal,
-} from "../../redux/cart/cart.selector";
+} from '../../redux/cart/cart.selector';
 
-import "./checkoutPage.styles.scss";
+import './checkoutPage.styles.scss';
 
 const CheckoutPage = ({ cartItems, cartTotal }) => (
   <div className="checkout-page">
@@ -24,6 +25,7 @@ const CheckoutPage = ({ cartItems, cartTotal }) => (
       <div className="alert-message">Please add some items first</div>
     )}
     <div className="total">Total: ${cartTotal}</div>
+    <StripeButton price={cartTotal} />
   </div>
 );
 
