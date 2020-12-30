@@ -18,29 +18,61 @@ export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
 export const createUserDocument = async (authUser, additionalData) => {
-    if(!authUser) return;
+  if (!authUser) return;
 
-    const userRef = firestore.doc(`users/${authUser.uid}`);
-    const userSnapshot = await userRef.get();
+  const userRef = firestore.doc(`users/${authUser.uid}`);
+  const userSnapshot = await userRef.get();
 
-    if(!userSnapshot.exists) {
-        const { displayName, email } = authUser;
-        const createdAt = new Date();
+  if (!userSnapshot.exists) {
+    const { displayName, email } = authUser;
+    const createdAt = new Date();
 
-        try {
-            await userRef.set({
-                displayName,
-                email,
-                createdAt,
-                ...additionalData
-            })
-        } catch (error) {
-            console.log('Error creating user ', error.message);
-        }
+    try {
+      await userRef.set({
+        displayName,
+        email,
+        createdAt,
+        ...additionalData,
+      });
+    } catch (error) {
+      console.log("Error creating user ", error.message);
     }
+  }
 
-    return userRef;
-}
+  return userRef;
+};
+
+export const addCollectionAndDocuments = async (
+  collectionKey,
+  objectsToAdd
+) => {
+  const collectionRef = firestore.collection(collectionKey);
+
+  const batch = firestore.batch();
+  objectsToAdd.forEach((obj) => {
+    const newDocRef = collectionRef.doc();
+    batch.set(newDocRef, obj);
+  });
+
+  return await batch.commit();
+};
+
+export const createCollectionsMap = (collectionsRef) => {
+  const transformedCollections = collectionsRef.docs.map((docSnapshot) => {
+    const { title, items } = docSnapshot.data();
+    return {
+      id: docSnapshot.id,
+      routeName: title.toLowerCase(),
+      title,
+      items,
+    };
+  });
+
+  return transformedCollections.reduce((acc, collection) => {
+    acc[collection.title.toLowerCase()] = collection;
+    return acc;
+  }, {});
+};
 
 const provider = new firebase.auth.GoogleAuthProvider();
 //provider.setCustomParameters({ prompt: "select_count" });
