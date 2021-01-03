@@ -1,11 +1,13 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 
 import "./sign-in.styles.scss";
 import FormInput from "../form-input/form-input.component";
 import CustomButton from "../custom-button/custom-button.component";
-import { signInWithGoogle } from "../../firebase/firebase.utils";
-import { auth } from "../../firebase/firebase.utils";
-
+import {
+  emailSignInStart,
+  googleSignInStart,
+} from "../../redux/user/user.actions";
 
 class SignIn extends Component {
   constructor() {
@@ -18,14 +20,10 @@ class SignIn extends Component {
 
   handleSubmit = async (event) => {
     event.preventDefault();
-
-    try {
-      const { email, password } = this.state;
-      await auth.signInWithEmailAndPassword(email, password);
-      this.setState({ email: "", password: "" });
-    } catch (error) {
-      console.error(error)
-    }
+    const { signInWithEmail } = this.props;
+    const { email, password } = this.state;
+    signInWithEmail(email, password);
+    this.setState({ email: "", password: "" });
   };
 
   handleChange = (event) => {
@@ -34,6 +32,7 @@ class SignIn extends Component {
   };
 
   render() {
+    const { signInWithGoogle } = this.props;
     return (
       <div className="sign-in">
         <h2 className="title">I already have an account.</h2>
@@ -60,7 +59,7 @@ class SignIn extends Component {
 
           <div className="btn-group">
             <CustomButton type="submit">Sign In</CustomButton>
-            <CustomButton onClick={signInWithGoogle}>
+            <CustomButton type="button" onClick={signInWithGoogle}>
               Sign In With Google
             </CustomButton>
           </div>
@@ -69,4 +68,11 @@ class SignIn extends Component {
     );
   }
 }
-export default SignIn;
+
+const mapDispatchToProps = (dispatch) => ({
+  signInWithGoogle: () => dispatch(googleSignInStart()),
+  signInWithEmail: (email, password) =>
+    dispatch(emailSignInStart({ email, password })),
+});
+
+export default connect(null, mapDispatchToProps)(SignIn);

@@ -74,12 +74,21 @@ export const createCollectionsMap = (collectionsRef) => {
   }, {});
 };
 
-const provider = new firebase.auth.GoogleAuthProvider();
+export const googleSignInProvider = new firebase.auth.GoogleAuthProvider();
 //provider.setCustomParameters({ prompt: "select_count" });
 export const signInWithGoogle = () =>
   auth
-    .signInWithPopup(provider)
+    .signInWithPopup(googleSignInProvider)
     .then((res) => console.log(res))
     .catch((err) => console.log(err));
+
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = auth.onAuthStateChanged(userAuth => {
+      unsubscribe();
+      resolve(userAuth)
+    }, reject)
+  })
+}
 
 export default firebase;
